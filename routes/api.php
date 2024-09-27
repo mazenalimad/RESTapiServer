@@ -28,21 +28,22 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware(['auth:sanctum']);
 
-Route::get('/movies', [MoviesController::class, 'index'])->name('movies');
+
+// v1
+
 Route::group(['prefix'=> 'v1', 'namespace' => 'App\Http\Controllers\api\v1'/*, 'middleware' => ['auth:sanctum']*/], function () {
-    //Route::apiResource('movies', MoviesController::class);
     Route::get('/movies', [MoviesController::class, 'index'])->name('movies');
-    Route::post('/movies', [MoviesController::class, 'store'])->name('store')->middleware(['auth:sanctum']);
-    Route::get('/movies/{id}', [MoviesController::class, 'show'])->name('show');
-    Route::put('/movies/{id}', [MoviesController::class, 'update'])->name('update')->middleware(['auth:sanctum']);
-    Route::delete('/movies/{id}', [MoviesController::class, 'destroy'])->name('destroy')->middleware(['auth:sanctum']);
+    Route::post('/movies', [MoviesController::class, 'store'])->name('store')->middleware(['auth:sanctum', 'admin']);
+    Route::get('/movies/{id}', [MoviesController::class, 'show'])->name('show')->middleware(['auth:sanctum', 'admin']);
+    Route::put('/movies/{id}', [MoviesController::class, 'update'])->name('update')->middleware(['auth:sanctum', 'admin']);
+    Route::delete('/movies/{id}', [MoviesController::class, 'destroy'])->name('destroy')->middleware(['auth:sanctum', 'admin']);
 
 
-    Route::get('/casts', [CastMembersController::class,'index'])->name('casts')->middleware(['auth:sanctum']);
-    Route::get('/directors', [DirectorsController::class, 'index'])->name('directors')->middleware(['auth:sanctum']);
-    Route::get('/domains', [DomainsController::class, 'index'])->name('domains')->middleware(['auth:sanctum']);
-    Route::get('/genres', [GenresController::class, 'index'])->name('genres')->middleware(['auth:sanctum']);
-    Route::get('/languages', [LanguagesController::class, 'index'])->name('Languages')->middleware(['auth:sanctum']);
+    Route::get('/casts', [CastMembersController::class,'index'])->name('casts')->middleware(['auth:sanctum', 'admin']);
+    Route::get('/directors', [DirectorsController::class, 'index'])->name('directors')->middleware(['auth:sanctum', 'admin']);
+    Route::get('/domains', [DomainsController::class, 'index'])->name('domains')->middleware(['auth:sanctum', 'admin']);
+    Route::get('/genres', [GenresController::class, 'index'])->name('genres')->middleware(['auth:sanctum', 'admin']);
+    Route::get('/languages', [LanguagesController::class, 'index'])->name('Languages')->middleware(['auth:sanctum', 'admin']);
 
     Route::get('/favorites', [FavoriteController::class, 'index'])->middleware(['auth:sanctum']);
     Route::post('/favorites', [FavoriteController::class, 'store'])->middleware(['auth:sanctum']);

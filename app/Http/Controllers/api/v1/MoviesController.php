@@ -8,7 +8,8 @@ use App\Models\movies;
 use App\Http\Requests\StoremoviesRequest;
 use App\Http\Requests\UpdatemoviesRequest;
 use App\Http\Controllers\Controller;
-use Request;
+use Illuminate\Http\Request;
+//use Request;
 
 class MoviesController extends Controller
 {
@@ -17,11 +18,36 @@ class MoviesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $movies = movies::paginate()->load('directors', 'cast_members', 'domains', 'genres', 'languages');
-        return response()->json(new MoviesCollection($movies));
+        $direction = $request->input('direction', 'asc'); // Default to 'asc' if not provided
+        $orderby = $request->input('orderby', 'id');
+        
+        // Paginate the movies, e.g., 10 per page
+        $movies = Movies::with(['directors', 'cast_members', 'domains', 'genres', 'languages'])
+                            ->orderBy($orderby,$direction)
+                            ->paginate(10);
+
+        // Return JSON response with pagination info and movies
+        return response()->json([
+            'data' => new MoviesCollection($movies),
+            'meta' => [
+                'total' => $movies->total(),
+                'pageSize' => $movies->perPage(),
+                'current_page' => $movies->currentPage(),
+                'last_page' => $movies->lastPage(),
+                'sort'=> [
+                    'active' => $orderby,
+                    'direction' => $direction,
+                ]
+            ],
+        ]);
     }
+
+    // 'next_page_url' => $movies->nextPageUrl(),
+                // 'prev_page_url' => $movies->previousPageUrl(),
+                // 'from' => $movies->firstItem(),
+                // 'to' => $movies->lastItem(),
 
     /**
      * Store a newly created resource in storage.
