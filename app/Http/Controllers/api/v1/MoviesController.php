@@ -20,8 +20,12 @@ class MoviesController extends Controller
      */
     public function index(Request $request)
     {
-        $direction = $request->input('direction', 'asc'); // Default to 'asc' if not provided
-        $orderby = $request->input('orderby', 'id');
+        $validDirections = ['asc', 'desc'];
+        $validOrderby = ['id', 'name', 'released_at', 'genres', 'average_rating'];
+
+        // Validate direction and orderby inputs, fallback to default if invalid
+        $direction = in_array($request->input('direction', 'asc'), $validDirections) ? $request->input('direction') : 'asc';
+        $orderby = in_array($request->input('orderby', 'id'), $validOrderby) ? $request->input('orderby') : 'id';
         
         // Paginate the movies, e.g., 10 per page
         $movies = Movies::with(['directors', 'cast_members', 'domains', 'genres', 'languages'])
@@ -43,11 +47,6 @@ class MoviesController extends Controller
             ],
         ]);
     }
-
-    // 'next_page_url' => $movies->nextPageUrl(),
-                // 'prev_page_url' => $movies->previousPageUrl(),
-                // 'from' => $movies->firstItem(),
-                // 'to' => $movies->lastItem(),
 
     /**
      * Store a newly created resource in storage.
