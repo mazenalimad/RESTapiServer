@@ -29,24 +29,28 @@ class MoviesCollection extends ResourceCollection
                     // Access related directors, cast members, etc.
                     "directors" => $movie->directors->map(function ($director) {
                         return [
+                            "id" => $director->id,
                             "director" => $director->director_name,
                         ];
                     }),
 
                     "castMembers" => $movie->cast_members->map(function ($cast_member) {
                         return [
+                            "id" => $cast_member->id,
                             "cast" => $cast_member->cast_name,
                         ];
                     }),
 
                     "genres" => $movie->genres->map(function ($genre) {
                         return [
+                            "id" => $genre->id,
                             "genre" => $genre->genre_name,
                         ];
                     }),
 
                     "languages" => $movie->languages->map(function ($language) {
                         return [
+                            "id" => $language->id,
                             "language" => $language->language_name,
                         ];
                     }),

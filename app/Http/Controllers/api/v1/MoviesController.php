@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api\v1;
 
+
 use App\Http\Resources\v1\moviesResources;
 use App\Http\Resources\v1\MoviesCollection;
 use App\Models\movies;
@@ -24,14 +25,27 @@ class MoviesController extends Controller
         $validOrderby = ['id', 'name', 'released_at', 'genres', 'average_rating'];
 
         // Validate direction and orderby inputs, fallback to default if invalid
-        $direction = in_array($request->input('direction', 'asc'), $validDirections) ? $request->input('direction') : 'asc';
-        $orderby = in_array($request->input('orderby', 'id'), $validOrderby) ? $request->input('orderby') : 'id';
+        $direction = in_array($request->get('direction'), $validDirections) ? $request->input('direction') : 'asc';
+        $orderby = in_array($request->get('orderby'), $validOrderby) ? $request->input('orderby') : 'id';
         
         // Paginate the movies, e.g., 10 per page
-        $movies = Movies::with(['directors', 'cast_members', 'domains', 'genres', 'languages'])
-                            ->orderBy($orderby,$direction)
-                            ->paginate(10);
-
+        if(!($request->get('orderby') === 'genres')) {
+            $movies = Movies::with(['directors',
+                                                 'cast_members', 
+                                                  'domains', 
+                                                    'genres', 
+                                                     'languages'])
+                                ->orderBy($orderby,$direction)
+                                ->paginate(10);
+        }else{
+            $movies = Movies::with(['directors',
+                                                'cast_members',
+                                                 'domains',
+                                                  'genres',
+                                                   'languages'])
+                                ->orderByGenre($direction)
+                                ->paginate(10);
+        }
         // Return JSON response with pagination info and movies
         return response()->json([
             'data' => new MoviesCollection($movies),

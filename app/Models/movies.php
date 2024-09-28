@@ -51,4 +51,12 @@ class movies extends Model
     public function cast_members (){
         return $this->belongsToMany(cast_members::class,'movie_cast', 'movie_id', 'cast_id');
     }
+
+    public function scopeOrderByGenre($query, $direction)
+    {
+        return $query->leftJoin('movie_genres', 'movies.id', '=', 'movie_genres.movie_id')
+                    ->leftJoin('genres', 'genres.id', '=', 'movie_genres.genre_id')
+                    ->orderBy('genres.genre_name', $direction)
+                    ->select('movies.*'); // make sure to select movie columns to avoid ambiguity
+    }
 }
