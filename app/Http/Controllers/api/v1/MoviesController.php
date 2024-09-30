@@ -70,8 +70,23 @@ class MoviesController extends Controller
      */
     public function store(StoremoviesRequest $request)
     {
+        // Get validated data
+        $validated = $request->validated();
+
+        // Map request data to database column names
+        $data = [
+            'name' => $validated['name'],
+            'released_at' => $validated['released_at'],
+            'poster_url' => $validated['posterUrl'],  // Map posterUrl to poster_url
+            'synopsis' => $validated['synopsis'],
+            'duration' => $validated['duration'],
+            'average_rating' => $validated['averageRating'],  // Map averageRating to average_rating
+            'url' => $validated['url'],
+            'crawled_at' => now(),  // You can add any other fields like crawled_at
+        ];
+
         // Create a new movie using mass assignment
-        $movie = movies::create($request->validated());
+        $movie = movies::create($data);
 
         // Sync the many-to-many relationships if they are provided in the request
         if ($request->has('directors')) {
@@ -122,13 +137,25 @@ class MoviesController extends Controller
      */
     public function update(UpdatemoviesRequest $request, $movies)
     {
-        \Log::info($request->all());
+        // Get validated data
+        $validated = $request->validated();
+
+        $vaildData = [
+            'name' => $validated['name'],
+            'released_at' => $validated['released_at'],
+            'poster_url' => $validated['posterUrl'],  // Map posterUrl to poster_url
+            'synopsis' => $validated['synopsis'],
+            'duration' => $validated['duration'],
+            'average_rating' => $validated['averageRating'],  // Map averageRating to average_rating
+            'url' => $validated['url'],
+            'crawled_at' => now(),  // You can add any other fields like crawled_at
+        ];
         
         // Find the movie by ID and eager load the relationships
         $data = movies::with('directors', 'cast_members', 'domains', 'genres', 'languages')->findOrFail($movies);
 
         // Update the movie's basic fields (title, release year, etc.)
-        $data->update($request->validated());
+        $data->update($vaildData);
 
         // Sync many-to-many relationships if they are present in the request
         if ($request->has('directors')) {

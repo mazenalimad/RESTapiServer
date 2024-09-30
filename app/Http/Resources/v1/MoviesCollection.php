@@ -20,7 +20,7 @@ class MoviesCollection extends ResourceCollection
                     "id" => $movie->id,
                     "name" => $movie->name,
                     "released_at" => $movie->released_at,
-                    "posteUrl" => $movie->poster_url,
+                    "posterUrl" => $movie->poster_url,
                     "synopsis" => $movie->synopsis,
                     "duration" => $movie->duration,
                     "averageRating" => $movie->average_rating,

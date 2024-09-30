@@ -26,12 +26,10 @@ class StoremoviesRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',  // Make sure 'name' is required and validated
             'released_at' => 'nullable|integer|min:1900|max:'.(date('Y') + 1),
-            'poster_url' => 'nullable|string',
+            'posterUrl' => 'nullable|string',
             'synopsis' => 'nullable|string',
             'duration' => 'nullable|integer',
-            'trailer_url' => 'nullable|url',
-            'average_rating' => 'nullable|numeric|min:0|max:10',
-            'crawled_at' => 'nullable|date',
+            'averageRating' => 'nullable|numeric|min:0|max:10',
             'url' => 'nullable|url',
         ];
     }
